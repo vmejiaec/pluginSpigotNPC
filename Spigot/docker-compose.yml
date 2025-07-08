@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  buildtools:
+    build:
+      context: ./buildtools
+    container_name: buildtools
+    volumes:
+      - ./buildtools/output:/build
+  
+  servidor:
+    build:
+      context: ./servidor
+    container_name: spigotserver
+    ports:
+      - "25565:25565"
+    volumes:
+      - ./servidor:/server

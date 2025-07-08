@@ -1,0 +1,70 @@
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+
+# IDEs
+.idea/
+.vscode/
+.project
+.classpath
+.settings/
+*.iml
+*.ipr
+*.iws
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+crash-reports/
+
+# Docker
+# Exclude Spigot server generated files and volumes
+Spigot/servidor/banned-ips.json
+Spigot/servidor/banned-players.json
+Spigot/servidor/bukkit.yml
+Spigot/servidor/commands.yml
+Spigot/servidor/eula.txt
+Spigot/servidor/help.yml
+Spigot/servidor/ops.json
+Spigot/servidor/permissions.yml
+Spigot/servidor/server.properties
+Spigot/servidor/spigot.jar
+Spigot/servidor/spigot.yml
+Spigot/servidor/usercache.json
+Spigot/servidor/whitelist.json
+Spigot/servidor/world/
+Spigot/servidor/world_nether/
+Spigot/servidor/world_the_end/
+Spigot/servidor/plugins/*.jar # Exclude compiled plugins in the server directory
+Spigot/servidor/plugins/bStats/
+Spigot/servidor/plugins/Citizens/
+Spigot/servidor/plugins/PluginMetrics/
+Spigot/servidor/libraries/
+Spigot/servidor/bundler/
+
+# Exclude BuildTools output
+Spigot/buildtools/output/
+
+# Temporary files
+*~
+*.bak
+*.swp
+*.swo
+*.tmp
+*.class
+
+# Specific temporary Java files
+Soldado copy.java
+Soldado copy 2.java
