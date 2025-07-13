@@ -10,3 +10,6 @@ commands:
   eliminarnpcs:
     description: Elimina todos los NPCs 
     usage: /eliminarnpcs
+  iniciarpatrullaje:
+    description: Inicia el patrullaje del NPC
+    usage: /iniciarpatrullaje

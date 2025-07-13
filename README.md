@@ -1,38 +1,79 @@
-# NPC para patrullar entre dos puntos
+# Plugin de NPC Soldado para Spigot
 
 ## Descripción
-Este plugin permite la creación de un NPC (Non-Player Character) que patrulla automáticamente entre dos puntos definidos. El primer punto es la ubicación donde el NPC es creado, y el segundo punto se establece a 12 bloques de distancia horizontal desde el punto de creación. Además, el NPC interactúa con los jugadores: si un jugador se aproxima al NPC llevando una espada en la mano, el NPC le enviará un mensaje.
+Este plugin para Spigot permite crear un NPC soldado llamado "Aurora" que patrulla de forma autónoma entre dos puntos. La principal característica de este plugin es la **persistencia**: el NPC y su ruta de patrulla se guardan y se recargan automáticamente cada vez que el servidor se reinicia.
 
-## Características
-*   **Creación de NPC Patrullero:** Genera un NPC que sigue una ruta de patrulla predefinida.
-*   **Patrulla de Dos Puntos:** El NPC se mueve entre su punto de creación y un segundo punto a 12 bloques de distancia horizontal.
-*   **Detección de Jugadores:** Identifica a los jugadores que se acercan al NPC.
-*   **Interacción con Espada:** Si el jugador detectado lleva una espada, el NPC le envía un mensaje personalizado.
+El NPC también interactúa con los jugadores cercanos. Si un jugador se acerca a menos de 5 bloques con una espada en la mano, el NPC le enviará un mensaje.
+
+## Características Principales
+*   **NPC Persistente:** El NPC no desaparece al reiniciar el servidor. Su identidad y sus puntos de patrulla se guardan en un archivo de configuración.
+*   **Patrullaje Automático:** El NPC patrulla de forma continua entre un punto de inicio (donde se crea) y un punto final a 12 bloques de distancia.
+*   **Detección de Jugadores:** El NPC detecta jugadores cercanos y reacciona si llevan una espada.
+*   **Comandos Sencillos:** Incluye comandos fáciles de usar para crear y eliminar el NPC.
+*   **Eficiencia:** Utiliza una única tarea asíncrona para detectar jugadores, garantizando un impacto mínimo en el rendimiento del servidor.
 
 ## Instalación
-Para instalar este plugin en tu servidor Spigot, sigue estos pasos:
+1.  **Requisito Previo:** Asegúrate de tener el plugin [Citizens](https://www.spigotmc.org/resources/citizens.1381/) instalado en tu servidor.
+2.  Descarga la última versión del plugin (`Soldado.jar`) desde la sección de [releases](https://github.com/tu-usuario/tu-repositorio/releases).
+3.  Copia el archivo `.jar` en la carpeta `plugins` de tu servidor Spigot.
+4.  Reinicia el servidor. El plugin se activará automáticamente.
 
-1.  Asegúrate de tener instalado el plugin **Citizens** en tu servidor, ya que es una dependencia necesaria para el funcionamiento de este plugin.
-2.  Descarga el archivo `.jar` de este plugin.
-3.  Copia el archivo `.jar` descargado en la carpeta `plugins` de tu servidor Spigot.
-4.  Reinicia o recarga tu servidor para que el plugin se active.
+## ¿Cómo Funciona?
 
-## Uso
-Una vez instalado y activado, puedes usar el plugin con los siguientes comandos:
+### Comandos
+Los comandos son simples y directos:
 
-*   `/crearnpc`: Crea un nuevo NPC en tu ubicación actual. Este punto será el inicio de su ruta de patrulla. El segundo punto de patrulla se establecerá automáticamente a 12 bloques de distancia horizontal.
-*   `/eliminarnpcs`: Elimina todos los NPCs creados por este plugin.
+*   `/crearnpc`
+    *   **Función:** Crea el NPC "Aurora" en tu ubicación actual. Este punto se convierte en el inicio de su patrulla.
+    *   **Ejemplo:**
+        ```
+        /crearnpc
+        ```
+        *Resultado:* El NPC aparecerá y comenzará a caminar hacia un punto a 12 bloques de distancia. Recibirás el mensaje: `¡NPC 'Aurora' creado y patrullando!`.
 
-**Interacción con el NPC:**
-Para recibir un mensaje del NPC, simplemente acércate a él mientras llevas una espada en tu mano principal.
+*   `/eliminarnpc`
+    *   **Función:** Elimina permanentemente el NPC del servidor y de la configuración.
+    *   **Ejemplo:**
+        ```
+        /eliminarnpc
+        ```
+        *Resultado:* El NPC desaparecerá y recibirás el mensaje: `NPC eliminado correctamente`.
 
-## Compilación (para desarrolladores)
-Este proyecto es un proyecto Maven. Para compilarlo desde el código fuente, puedes usar uno de los siguientes métodos:
+### Interacción
+Para que el NPC interactúe contigo, sigue estos pasos:
+1.  Equipa cualquier tipo de espada en tu mano.
+2.  Acércate a menos de 5 bloques del NPC.
+3.  El NPC te enviará un mensaje, como: `Aurora: ¿Es eso una espada de diamante?`
 
-*   **Usando Maven:** Abre una terminal en la raíz del proyecto y ejecuta el siguiente comando:
-    ```bash
-    mvn clean package
-    ```
-    Esto generará el archivo `.jar` del plugin en el directorio `target/`.
+### Persistencia
+El plugin crea un archivo `config.yml` dentro de la carpeta del plugin (`plugins/Soldado/config.yml`). Este archivo almacena la ID del NPC y las coordenadas de sus puntos de patrulla.
 
-*   **Usando el script de compilación:** Puedes ejecutar el archivo `CrearPublicarPlugin.bat` ubicado en la raíz del proyecto. Este script automatiza el proceso de compilación.
+**Ejemplo del `config.yml`:**
+```yml
+npc:
+  id: 123
+  puntoA:
+    ==: org.bukkit.Location
+    world: world
+    x: 100.5
+    y: 68.0
+    z: 250.5
+    pitch: 0.0
+    yaw: 90.0
+  puntoB:
+    ==: org.bukkit.Location
+    world: world
+    x: 112.5
+    y: 68.0
+    z: 250.5
+    pitch: 0.0
+    yaw: 90.0
+```
+**No es necesario editar este archivo manualmente.** El plugin gestiona todo de forma automática.
+
+## Compilación (Para Desarrolladores)
+Si deseas compilar el plugin desde el código fuente, puedes usar Maven:
+```bash
+mvn clean package
+```
+El archivo `.jar` compilado se encontrará en la carpeta `target/`.
