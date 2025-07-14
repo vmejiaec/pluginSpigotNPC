@@ -3,7 +3,7 @@ package edu.vic;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.SkinTrait;
-import net.citizensnpcs.api.ai.event.NavigationCompleteEvent; 
+import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
 import net.citizensnpcs.api.event.SpawnReason;
 
 import org.bukkit.Bukkit;
@@ -17,6 +17,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.plugin.java.JavaPlugin;
 import net.md_5.bungee.api.ChatColor;
 
+import net.citizensnpcs.trait.waypoint.Waypoints;
+import net.citizensnpcs.trait.waypoint.LinearWaypointProvider;
+import net.citizensnpcs.trait.waypoint.Waypoint;
+
 public class Soldado extends JavaPlugin implements Listener {
 
     private NPC npc;
@@ -25,23 +29,24 @@ public class Soldado extends JavaPlugin implements Listener {
     // ConstanteS con el Nombre del NPC Y SU SKIN
     private static final String NPC_NAME = "Soldado"; // Nombre del NPC
     private static final String NPC_SKINNAME = "saku328"; // Int3ns1ve - DemosthenesV2 - StinkerToo . saku328
-    
 
     @Override
     public void onEnable() {
         Bukkit.getPluginManager().registerEvents(this, this);
-        getLogger().info("Plugin Soldado activado correctamente");        
+        getLogger().info("Plugin Soldado activado correctamente");
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player jugador)) return false;
+        if (!(sender instanceof Player jugador))
+            return false;
 
         // Crear el NPC
         if (label.equalsIgnoreCase("crearnpc")) {
             // Si args tiene un valor, usarlo como nombre del skin
             String npcSkinName = NPC_SKINNAME;
-            if (args.length > 0) npcSkinName= args[0];   
+            if (args.length > 0)
+                npcSkinName = args[0];
             return crearNPC(jugador, npcSkinName);
         }
 
@@ -64,39 +69,63 @@ public class Soldado extends JavaPlugin implements Listener {
         return false;
     }
 
+    // Configurar waypoints
+    private void configurarWaypoints() {
+        // 1. Obtener el trait de waypoints
+        Waypoints waypointsTrait = npc.getOrAddTrait(Waypoints.class);
+
+        // 2. Establecer el proveedor linear
+        waypointsTrait.setWaypointProvider("linear");
+
+        // 3. Obtener el proveedor linear
+        LinearWaypointProvider provider = (LinearWaypointProvider) waypointsTrait.getCurrentProvider();
+
+        // 4. Configurar el provider
+        provider.setCycle(true); // Repetir la ruta en bucle
+        provider.setCachePaths(true); // Cachear paths para mejor rendimiento
+
+        // 5. Crear y añadir waypoints
+        Waypoint waypoint1 = new Waypoint(puntoA);
+        Waypoint waypoint2 = new Waypoint(puntoB);
+
+        provider.addWaypoint(waypoint1);
+        provider.addWaypoint(waypoint2);
+    }
+
     // Crear el NPC con skin y nombre
     private boolean crearNPC(Player jugador, String skinName) {
-            if (npc != null && npc.isSpawned()) {
-                jugador.sendMessage("El NPC ya está creado.");
-                return true;
-            }
-         
-            // Crear el NPC con su nombre
-            npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, NPC_NAME);
-            // Configurar skin del NPC
-            try {
-                SkinTrait skinTrait = npc.getOrAddTrait(SkinTrait.class);
-                skinTrait.setSkinName( skinName, true);
-                skinTrait.setShouldUpdateSkins(true);
-                getLogger().info("Skin configurada para: "+ NPC_NAME);
-            } catch (Exception e) {
-                getLogger().warning("Error configurando skin: " + e.getMessage());
-            }
-
-            jugador.sendMessage("NPC creado");
-
-            // Establecer puntos A y B
-            Location loc = jugador.getLocation();
-            puntoA = loc.clone().add(loc.getDirection().multiply(2).setY(0));;
-            puntoB = loc.clone().add(loc.getDirection().multiply(15).setY(0)); 
-            // Spawn del NPC en el punto A
-            npc.spawn(puntoA, SpawnReason.CREATE); 
-            getLogger().info("NPC creado y spawneado en: " + puntoA.toString());
+        if (npc != null && npc.isSpawned()) {
+            jugador.sendMessage("El NPC ya está creado.");
             return true;
+        }
+
+        // Crear el NPC con su nombre
+        npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, NPC_NAME);
+        // Configurar skin del NPC
+        try {
+            SkinTrait skinTrait = npc.getOrAddTrait(SkinTrait.class);
+            skinTrait.setSkinName(skinName, true);
+            skinTrait.setShouldUpdateSkins(true);
+            getLogger().info("Skin configurada para: " + NPC_NAME);
+        } catch (Exception e) {
+            getLogger().warning("Error configurando skin: " + e.getMessage());
+        }
+
+        jugador.sendMessage("NPC creado");
+
+        // Establecer puntos A y B
+        Location loc = jugador.getLocation();
+        puntoA = loc.clone().add(loc.getDirection().multiply(2).setY(0));
+        ;
+        puntoB = loc.clone().add(loc.getDirection().multiply(15).setY(0));
+        // Spawn del NPC en el punto A
+        npc.spawn(puntoA, SpawnReason.CREATE);
+        getLogger().info("NPC creado y spawneado en: " + puntoA.toString());
+        return true;
     }
 
     // Eliminar todos los NPCs
-    private boolean eliminarNPCs(Player jugador){
+    private boolean eliminarNPCs(Player jugador) {
         int cantidad = 0;
         for (NPC npc : CitizensAPI.getNPCRegistry()) {
             npc.destroy();
@@ -108,7 +137,8 @@ public class Soldado extends JavaPlugin implements Listener {
 
     // Este método inicia el movimiento al siguiente punto de patrullaje
     private void iniciarPatrullaje() {
-        if (npc == null || !npc.isSpawned()) return;
+        if (npc == null || !npc.isSpawned())
+            return;
 
         // Configurar navegación
         npc.setProtected(false);
@@ -121,7 +151,7 @@ public class Soldado extends JavaPlugin implements Listener {
 
     // --- Manejador de eventos para la finalización de la navegación ---
     @EventHandler
-    public void onNavigationComplete(NavigationCompleteEvent event) { 
+    public void onNavigationComplete(NavigationCompleteEvent event) {
         if (event.getNPC().equals(this.npc)) { // Asegúrate de que sea tu NPC
             getLogger().info("NPC llegó al destino, ahora cambia de dirección.");
             yendoAPuntoB = !yendoAPuntoB; // Cambia la dirección
