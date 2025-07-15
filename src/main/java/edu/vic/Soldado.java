@@ -6,8 +6,11 @@ import net.citizensnpcs.trait.SkinTrait;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
 import net.citizensnpcs.api.event.SpawnReason;
 
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
@@ -23,13 +26,20 @@ import net.citizensnpcs.trait.waypoint.Waypoint;
 public class Soldado extends JavaPlugin implements Listener {
 
     private NPC npc;
-    private Location[] puntos = new Location[5];
-    // ConstanteS con el Nombre del NPC Y SU SKIN
-    private static final String NPC_NAME = "Soldado"; // Nombre del NPC
-    private static final String NPC_SKINNAME = "saku328"; // Int3ns1ve - DemosthenesV2 - StinkerToo . saku328
+
+    private double[][] puntos = null;
+    Location puntoPartida = null;
+
+    // Constantes con el Nombre del NPC Y SU SKIN por defecto
+    // Estos valores pueden ser modificados en el archivo config.yml
+    // o al crear el NPC con el comando /crearnpc <nombre_skin>
+    private String NPC_Name = "Soldado";
+    private String NPC_SkinName = "saku328";
 
     @Override
     public void onEnable() {
+        this.saveDefaultConfig(); // Crea config.yml si no existe
+        cargarConfiguracionNPC();
         Bukkit.getPluginManager().registerEvents(this, this);
         getLogger().info("Plugin Soldado activado correctamente");
     }
@@ -42,10 +52,9 @@ public class Soldado extends JavaPlugin implements Listener {
         // Crear el NPC
         if (label.equalsIgnoreCase("crearnpc")) {
             // Si args tiene un valor, usarlo como nombre del skin
-            String npcSkinName = NPC_SKINNAME;
             if (args.length > 0)
-                npcSkinName = args[0];
-            return crearNPC(jugador, npcSkinName);
+                NPC_SkinName = args[0];
+            return crearNPC(jugador, NPC_SkinName);
         }
 
         // Eliminar el NPC
@@ -54,6 +63,29 @@ public class Soldado extends JavaPlugin implements Listener {
         }
 
         return false;
+    }
+
+    // Cargar configuración del NPC desde el archivo config.yml
+    private void cargarConfiguracionNPC() {
+        // Aquí podrías cargar la configuración del NPC desde un archivo config.yml
+        // Por ejemplo, usando Bukkit's getConfig() para obtener el nombre y skin del
+        // NPC
+        // npc.setName(getConfig().getString("npc.name"));
+        // npc.getOrAddTrait(SkinTrait.class).setSkinName(getConfig().getString("npc.skin"));
+
+        NPC_Name = getConfig().getString("npc.name", NPC_Name);
+        NPC_SkinName = getConfig().getString("npc.skin", NPC_SkinName);
+
+        List<String> waypointsList = getConfig().getStringList("waypoints");
+        puntos = new double[waypointsList.size()][3];
+
+        for (int i = 0; i < waypointsList.size(); i++) {
+            String[] coords = waypointsList.get(i).split(",");
+            puntos[i][0] = Double.parseDouble(coords[0]);
+            puntos[i][1] = Double.parseDouble(coords[1]);
+            puntos[i][2] = Double.parseDouble(coords[2]);
+        }
+
     }
 
     // Configurar waypoints
@@ -68,44 +100,17 @@ public class Soldado extends JavaPlugin implements Listener {
         LinearWaypointProvider provider = (LinearWaypointProvider) waypointsTrait.getCurrentProvider();
 
         // 4. Configurar el provider
-        provider.setCycle(true); // Repetir la ruta en bucle
-        provider.setCachePaths(true); // Cachear paths para mejor rendimiento
+        provider.setCycle(true);
+        provider.setCachePaths(true);
 
-        // Establecer puntos A y B
-        Location loc = jugador.getLocation();
-        loc = loc.clone();
-        loc.setX(-41);
-        loc.setY(63);
-        loc.setZ(46);
-        puntos[0] = loc;
-
-        loc = loc.clone();
-        loc.setX(-49);
-        loc.setY(63);
-        loc.setZ(46);
-        puntos[1] = loc;
-
-        loc = loc.clone();
-        loc.setX(-49);
-        loc.setY(63);
-        loc.setZ(40);
-        puntos[2] = loc;
-
-        loc = loc.clone();
-        loc.setX(-53);
-        loc.setY(63);
-        loc.setZ(36);
-        puntos[3] = loc;
-
-        loc = loc.clone();
-        loc.setX(-41);
-        loc.setY(63);
-        loc.setZ(36);
-        puntos[4] = loc;
+        // Establecer puntos
+        World world = jugador.getWorld();
+        puntoPartida = new Location(world, puntos[0][0], puntos[0][1], puntos[0][2]);
 
         // 5. Crear y añadir waypoints
-        for (Location punto : puntos) {
-            Waypoint waypoint = new Waypoint(punto);
+        for (var punto : puntos) {
+            Location loc = new Location(world, punto[0], punto[1], punto[2]);
+            Waypoint waypoint = new Waypoint(loc);
             provider.addWaypoint(waypoint);
         }
     }
@@ -118,13 +123,13 @@ public class Soldado extends JavaPlugin implements Listener {
         }
 
         // Crear el NPC con su nombre
-        npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, NPC_NAME);
+        npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, NPC_Name);
         // Configurar skin del NPC
         try {
             SkinTrait skinTrait = npc.getOrAddTrait(SkinTrait.class);
             skinTrait.setSkinName(skinName, true);
             skinTrait.setShouldUpdateSkins(true);
-            getLogger().info("Skin configurada para: " + NPC_NAME);
+            getLogger().info("Skin configurada para: " + NPC_Name + " con skin: " + skinName);
         } catch (Exception e) {
             getLogger().warning("Error configurando skin: " + e.getMessage());
         }
@@ -133,8 +138,8 @@ public class Soldado extends JavaPlugin implements Listener {
         configurarWaypoints(jugador);
 
         // Spawn del NPC en el primer punto
-        npc.spawn(puntos[0], SpawnReason.CREATE);
-        getLogger().info("NPC creado y spawneado en: " + puntos[0].toString());
+        npc.spawn(puntoPartida, SpawnReason.CREATE);
+        getLogger().info("NPC creado y spawneado en: " + puntoPartida.toString());
         return true;
     }
 

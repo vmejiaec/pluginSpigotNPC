@@ -1,14 +1,16 @@
 # Configuración del plugin Soldado
 # Este archivo almacena la configuración persistente del NPC
 
-# Configuración del NPC (se llena automáticamente)
+# Configuración del NPC 
 npc:
-  # ID del NPC (automático)
-  # puntoA: ubicación del punto A (automático) 
-  # puntoB: ubicación del punto B (automático)
+  name: "Soldado"
+  skin: "saku328"
 
-# Configuraciones opcionales
-settings:
-  patrol-distance: 12.0
-  detection-range: 5.0
-  check-interval: 100
+# Configuración de las coordenadas de los waypoints
+# Las coordenadas están en formato "x,y,z"
+waypoints:
+  - "-41,63,46"
+  - "-49,63,46"
+  - "-49,63,40"
+  - "-53,63,36"
+  - "-41,63,36"
