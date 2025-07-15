@@ -24,8 +24,7 @@ import net.citizensnpcs.trait.waypoint.Waypoint;
 public class Soldado extends JavaPlugin implements Listener {
 
     private NPC npc;
-    private Location puntoA, puntoB;
-    private boolean yendoAPuntoB = true;
+    private Location[] puntos = new Location[4];
     // ConstanteS con el Nombre del NPC Y SU SKIN
     private static final String NPC_NAME = "Soldado"; // Nombre del NPC
     private static final String NPC_SKINNAME = "saku328"; // Int3ns1ve - DemosthenesV2 - StinkerToo . saku328
@@ -55,22 +54,11 @@ public class Soldado extends JavaPlugin implements Listener {
             return eliminarNPCs(jugador);
         }
 
-        // Iniciar patrullaje
-        if (label.equalsIgnoreCase("iniciarpatrullaje")) {
-            if (npc == null || !npc.isSpawned()) {
-                jugador.sendMessage(ChatColor.RED + "No hay NPCs para patrullar.");
-                return false;
-            }
-            iniciarPatrullaje();
-            jugador.sendMessage(ChatColor.GREEN + "Patrullaje iniciado.");
-            return true;
-        }
-
         return false;
     }
 
     // Configurar waypoints
-    private void configurarWaypoints() {
+    private void configurarWaypoints(Player jugador) {
         // 1. Obtener el trait de waypoints
         Waypoints waypointsTrait = npc.getOrAddTrait(Waypoints.class);
 
@@ -84,12 +72,43 @@ public class Soldado extends JavaPlugin implements Listener {
         provider.setCycle(true); // Repetir la ruta en bucle
         provider.setCachePaths(true); // Cachear paths para mejor rendimiento
 
-        // 5. Crear y añadir waypoints
-        Waypoint waypoint1 = new Waypoint(puntoA);
-        Waypoint waypoint2 = new Waypoint(puntoB);
+        // Establecer puntos A y B
+        Location loc = jugador.getLocation();
+        loc = loc.clone();
+        loc.setX(-41);
+        loc.setY(63);
+        loc.setZ(46);
+        puntos[0] = loc;
 
-        provider.addWaypoint(waypoint1);
-        provider.addWaypoint(waypoint2);
+        loc = loc.clone();
+        loc.setX(-49);
+        loc.setY(63);
+        loc.setZ(46);
+        puntos[1] = loc;
+
+        loc = loc.clone();
+        loc.setX(-49);
+        loc.setY(63);
+        loc.setZ(40);
+        puntos[2] = loc;
+
+        loc = loc.clone();
+        loc.setX(-53);
+        loc.setY(63);
+        loc.setZ(36);
+        puntos[3] = loc;
+
+        loc = loc.clone();
+        loc.setX(-41);
+        loc.setY(63);
+        loc.setZ(36);
+        puntos[4] = loc;
+
+        // 5. Crear y añadir waypoints
+        for (Location punto : puntos) {
+            Waypoint waypoint = new Waypoint(punto);
+            provider.addWaypoint(waypoint);
+        }
     }
 
     // Crear el NPC con skin y nombre
@@ -110,14 +129,10 @@ public class Soldado extends JavaPlugin implements Listener {
         } catch (Exception e) {
             getLogger().warning("Error configurando skin: " + e.getMessage());
         }
-
         jugador.sendMessage("NPC creado");
 
-        // Establecer puntos A y B
-        Location loc = jugador.getLocation();
-        puntoA = loc.clone().add(loc.getDirection().multiply(2).setY(0));
-        ;
-        puntoB = loc.clone().add(loc.getDirection().multiply(15).setY(0));
+        configurarWaypoints(jugador);
+
         // Spawn del NPC en el punto A
         npc.spawn(puntoA, SpawnReason.CREATE);
         getLogger().info("NPC creado y spawneado en: " + puntoA.toString());
@@ -135,29 +150,4 @@ public class Soldado extends JavaPlugin implements Listener {
         return true;
     }
 
-    // Este método inicia el movimiento al siguiente punto de patrullaje
-    private void iniciarPatrullaje() {
-        if (npc == null || !npc.isSpawned())
-            return;
-
-        // Configurar navegación
-        npc.setProtected(false);
-        npc.getNavigator().getDefaultParameters().range(50).baseSpeed(1.5f);
-
-        Location destino = yendoAPuntoB ? puntoB : puntoA;
-        npc.getNavigator().setTarget(destino);
-        getLogger().info("NPC moviéndose a: " + destino.toString());
-    }
-
-    // --- Manejador de eventos para la finalización de la navegación ---
-    @EventHandler
-    public void onNavigationComplete(NavigationCompleteEvent event) {
-        if (event.getNPC().equals(this.npc)) { // Asegúrate de que sea tu NPC
-            getLogger().info("NPC llegó al destino, ahora cambia de dirección.");
-            yendoAPuntoB = !yendoAPuntoB; // Cambia la dirección
-            Location destino = yendoAPuntoB ? puntoB : puntoA;
-            npc.getNavigator().setTarget(destino);
-            getLogger().info("NPC moviéndose a: " + destino.toString());
-        }
-    }
 }
