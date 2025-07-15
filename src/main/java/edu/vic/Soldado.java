@@ -62,17 +62,18 @@ public class Soldado extends JavaPlugin implements Listener {
             return eliminarNPCs(jugador);
         }
 
+        // Volver a cargar la configuración del NPC
+        if (label.equalsIgnoreCase("recargarconfig")) {
+            cargarConfiguracionNPC();
+            jugador.sendMessage(ChatColor.GREEN + "Configuración del NPC recargada.");
+            return true;
+        }
+
         return false;
     }
 
     // Cargar configuración del NPC desde el archivo config.yml
     private void cargarConfiguracionNPC() {
-        // Aquí podrías cargar la configuración del NPC desde un archivo config.yml
-        // Por ejemplo, usando Bukkit's getConfig() para obtener el nombre y skin del
-        // NPC
-        // npc.setName(getConfig().getString("npc.name"));
-        // npc.getOrAddTrait(SkinTrait.class).setSkinName(getConfig().getString("npc.skin"));
-
         NPC_Name = getConfig().getString("npc.name", NPC_Name);
         NPC_SkinName = getConfig().getString("npc.skin", NPC_SkinName);
 

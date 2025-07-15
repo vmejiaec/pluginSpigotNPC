@@ -13,3 +13,6 @@ commands:
   iniciarpatrullaje:
     description: Inicia el patrullaje del NPC
     usage: /iniciarpatrullaje
+  recargarconfig:
+    description: Recarga la configuración del NPC desde el archivo config.yml
+    usage: /recargarconfig
