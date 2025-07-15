@@ -9,8 +9,8 @@ npc:
 # Configuración de las coordenadas de los waypoints
 # Las coordenadas están en formato "x,y,z"
 waypoints:
-  - "-41,63,46"
-  - "-49,63,46"
-  - "-49,63,40"
-  - "-53,63,36"
-  - "-41,63,36"
+  - "-41,64,46"
+  - "-49,64,46"
+  - "-49,64,40"
+  - "-53,64,36"
+  - "-41,64,36"

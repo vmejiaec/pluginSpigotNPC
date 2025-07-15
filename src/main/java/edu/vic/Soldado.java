@@ -64,6 +64,7 @@ public class Soldado extends JavaPlugin implements Listener {
 
         // Volver a cargar la configuración del NPC
         if (label.equalsIgnoreCase("recargarconfig")) {
+            this.reloadConfig(); // Recargar desde disco
             cargarConfiguracionNPC();
             jugador.sendMessage(ChatColor.GREEN + "Configuración del NPC recargada.");
             return true;
@@ -76,6 +77,8 @@ public class Soldado extends JavaPlugin implements Listener {
     private void cargarConfiguracionNPC() {
         NPC_Name = getConfig().getString("npc.name", NPC_Name);
         NPC_SkinName = getConfig().getString("npc.skin", NPC_SkinName);
+
+        getLogger().info(" -> Cargando configuración del NPC: " + NPC_Name + " con skin: " + NPC_SkinName);
 
         List<String> waypointsList = getConfig().getStringList("waypoints");
         puntos = new double[waypointsList.size()][3];
