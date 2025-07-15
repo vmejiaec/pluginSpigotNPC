@@ -24,7 +24,7 @@ import net.citizensnpcs.trait.waypoint.Waypoint;
 public class Soldado extends JavaPlugin implements Listener {
 
     private NPC npc;
-    private Location[] puntos = new Location[4];
+    private Location[] puntos = new Location[5];
     // ConstanteS con el Nombre del NPC Y SU SKIN
     private static final String NPC_NAME = "Soldado"; // Nombre del NPC
     private static final String NPC_SKINNAME = "saku328"; // Int3ns1ve - DemosthenesV2 - StinkerToo . saku328
@@ -133,9 +133,9 @@ public class Soldado extends JavaPlugin implements Listener {
 
         configurarWaypoints(jugador);
 
-        // Spawn del NPC en el punto A
-        npc.spawn(puntoA, SpawnReason.CREATE);
-        getLogger().info("NPC creado y spawneado en: " + puntoA.toString());
+        // Spawn del NPC en el primer punto
+        npc.spawn(puntos[0], SpawnReason.CREATE);
+        getLogger().info("NPC creado y spawneado en: " + puntos[0].toString());
         return true;
     }
 
