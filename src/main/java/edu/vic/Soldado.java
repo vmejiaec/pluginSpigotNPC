@@ -3,7 +3,6 @@ package edu.vic;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.SkinTrait;
-import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
 import net.citizensnpcs.api.event.SpawnReason;
 
 import java.util.List;
@@ -17,6 +16,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
+
 import net.md_5.bungee.api.ChatColor;
 
 import net.citizensnpcs.trait.waypoint.Waypoints;
@@ -71,6 +72,79 @@ public class Soldado extends JavaPlugin implements Listener {
         }
 
         return false;
+    }
+
+    // Usar BukkitRunnable para revisar si hay jugadores cerca
+    // y saludarles si no se ha hecho recientemente
+    private void iniciarSistemaInteraccion() {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (npc == null || !npc.isSpawned()) {
+                    cancel();
+                    return;
+                }
+
+                Player jugadorCerca = encontrarJugadorCerca();
+                if (jugadorCerca != null) {
+                    detenerYSaludar(jugadorCerca);
+                    // Mirar al jugador
+                    npc.faceLocation(jugadorCerca.getLocation());
+                } else {
+                    reanudarPatrullaje();
+                }
+            }
+        }.runTaskTimer(this, 0L, 20L); // Ejecutar cada segundo
+    }
+
+    private Player encontrarJugadorCerca() {
+        Location npcLoc = npc.getEntity().getLocation();
+        double distanciaDeteccion = 3.0;
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player.getWorld().equals(npcLoc.getWorld())) {
+                double distancia = player.getLocation().distance(npcLoc);
+                if (distancia <= distanciaDeteccion) {
+                    return player;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private boolean estaPatrullando = true;
+    private long tiempoUltimoSaludo = 0;
+    private String ultimoJugadorSaludado = "";
+
+    private void detenerYSaludar(Player jugadorCerca) {
+        if (estaPatrullando) {
+            // Pausar waypoints
+            Waypoints waypointsTrait = npc.getOrAddTrait(Waypoints.class);
+            LinearWaypointProvider provider = (LinearWaypointProvider) waypointsTrait.getCurrentProvider();
+            provider.setPaused(true);
+
+            // Saludar
+            String mensaje = "Hola " + jugadorCerca.getName() + " ... que tal?";
+            jugadorCerca.sendMessage(NPC_Name + ": " + mensaje);
+
+            estaPatrullando = false;
+            tiempoUltimoSaludo = System.currentTimeMillis();
+        }
+    }
+
+    private void reanudarPatrullaje() {
+        if (!estaPatrullando) {
+            // Espera un poco antes de saludar
+            long tiempoEspera = 3000; // 3 segundos
+            if (System.currentTimeMillis() - tiempoUltimoSaludo > tiempoEspera) {
+                Waypoints waypointsTrait = npc.getOrAddTrait(Waypoints.class);
+                LinearWaypointProvider provider = (LinearWaypointProvider) waypointsTrait.getCurrentProvider();
+                provider.setPaused(false);
+
+                estaPatrullando = true;
+            }
+        }
     }
 
     // Cargar configuración del NPC desde el archivo config.yml
@@ -140,6 +214,7 @@ public class Soldado extends JavaPlugin implements Listener {
         jugador.sendMessage("NPC creado");
 
         configurarWaypoints(jugador);
+        iniciarSistemaInteraccion();
 
         // Spawn del NPC en el primer punto
         npc.spawn(puntoPartida, SpawnReason.CREATE);
