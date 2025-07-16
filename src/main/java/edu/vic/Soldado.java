@@ -2,7 +2,9 @@ package edu.vic;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.trait.EntityPoseTrait;
 import net.citizensnpcs.trait.SkinTrait;
+import net.citizensnpcs.trait.EntityPoseTrait.EntityPose;
 import net.citizensnpcs.api.event.SpawnReason;
 
 import java.util.List;
@@ -13,6 +15,7 @@ import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -115,7 +118,6 @@ public class Soldado extends JavaPlugin implements Listener {
 
     private boolean estaPatrullando = true;
     private long tiempoUltimoSaludo = 0;
-    private String ultimoJugadorSaludado = "";
 
     private void detenerYSaludar(Player jugadorCerca) {
         if (estaPatrullando) {
@@ -127,6 +129,26 @@ public class Soldado extends JavaPlugin implements Listener {
             // Saludar
             String mensaje = "Hola " + jugadorCerca.getName() + " ... que tal?";
             jugadorCerca.sendMessage(NPC_Name + ": " + mensaje);
+
+            // Animación del saludo
+            LivingEntity living = (LivingEntity) npc.getEntity();
+            living.swingMainHand();
+
+            // Animación de agacharse
+            EntityPoseTrait pose = npc.getOrAddTrait(EntityPoseTrait.class);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    pose.setPose(EntityPose.CROUCHING);
+                }
+            }.runTaskLater(this, 10L);
+
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    pose.setPose(EntityPose.STANDING);
+                }
+            }.runTaskLater(this, 20L); // 20 ticks = 1 segundo
 
             estaPatrullando = false;
             tiempoUltimoSaludo = System.currentTimeMillis();
