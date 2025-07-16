@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -133,6 +134,11 @@ public class Soldado extends JavaPlugin implements Listener {
             // Animación del saludo
             LivingEntity living = (LivingEntity) npc.getEntity();
             living.swingMainHand();
+
+            jugadorCerca.getWorld().playSound(
+                    npc.getEntity().getLocation(),
+                    Sound.ENTITY_EXPERIENCE_ORB_PICKUP,
+                    1.0f, 1.0f);
 
             // Animación de agacharse
             EntityPoseTrait pose = npc.getOrAddTrait(EntityPoseTrait.class);
