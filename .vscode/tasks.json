@@ -1,0 +1,314 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build Plugin",
+            "type": "shell",
+            "command": "mvn",
+            "args": [
+                "clean",
+                "package"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "Copy Plugin to Spigot",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-Command",
+                "Copy-Item -Path 'target\\Soldado-1.0-SNAPSHOT.jar' -Destination 'Spigot\\servidor\\plugins\\' -Force"
+            ],
+            "group": "build",
+            "dependsOn": "Build Plugin",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "Start Spigot Debug Mode",
+            "type": "shell",
+            "command": "java",
+            "args": [
+                "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005",
+                "-Xmx2G",
+                "-Xms1G",
+                "-jar",
+                "spigot.jar",
+                "--nogui"
+            ],
+            "group": "build",
+            "isBackground": true,
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated"
+            },
+            "options": {
+                "cwd": "${workspaceFolder}/Spigot/servidor"
+            },
+            "problemMatcher": {
+                "pattern": {
+                    "regexp": "^(.*)$",
+                    "file": 1,
+                    "location": 2,
+                    "message": 3
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "^.*Starting minecraft server.*",
+                    "endsPattern": "^.*Done \\(.*\\)! For help, type \"help\".*"
+                }
+            }
+        },
+        {
+            "label": "Stop Spigot Server",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-Command",
+                "Get-Process -Name java -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -like '*spigot.jar*' } | Stop-Process -Force"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Build and Deploy Plugin",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Build Plugin",
+                "Copy Plugin to Spigot"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Compilar Plugin",
+            "type": "shell",
+            "command": "mvn",
+            "args": [
+                "clean",
+                "package"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "Compilar y Desplegar Plugin (Solo Spigot)",
+            "type": "shell",
+            "command": "cmd",
+            "args": [
+                "/c",
+                "mvn clean package && echo. && echo Copiando el plugin a Spigot... && copy /Y .\\target\\Soldado-1.0-SNAPSHOT.jar .\\Spigot\\servidor\\plugins\\ && echo. && echo ------------------------------------------------------------------ && echo                      Plugin compilado y copiado a Spigot. && echo ------------------------------------------------------------------ && echo Usar tasks: Iniciar Servidor Spigot / Detener Servidor Spigot && echo ------------------------------------------------------------------"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "dependsOrder": "sequence"
+        },
+        {
+            "label": "Iniciar Servidor Spigot",
+            "type": "shell",
+            "command": "java",
+            "args": [
+                "-Xmx2G",
+                "-Xms1G",
+                "-jar",
+                "spigot.jar",
+                "--nogui"
+            ],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true
+            },
+            "isBackground": true,
+            "options": {
+                "cwd": "${workspaceFolder}/Spigot/servidor"
+            },
+            "problemMatcher": {
+                "pattern": {
+                    "regexp": ".*"
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "^.*Starting minecraft server.*",
+                    "endsPattern": "^.*Done \\(.*\\)! For help, type \"help\".*"
+                }
+            }
+        },
+        {
+            "label": "Detener Servidor Spigot",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-Command",
+                "Get-Process -Name java -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -like '*spigot.jar*' } | Stop-Process -Force"
+            ],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "Compilar, Desplegar y Reiniciar Servidor",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Detener Servidor Spigot",
+                "Compilar y Desplegar Plugin (Solo Spigot)",
+                "Iniciar Servidor Spigot"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true
+            }
+        },
+        {
+            "label": "Compilar y Desplegar en Ambos Servidores",
+            "type": "shell",
+            "command": "cmd",
+            "args": [
+                "/c",
+                "mvn clean package && echo. && echo Copiando el plugin a ambos servidores... && copy /Y .\\target\\Soldado-1.0-SNAPSHOT.jar .\\Spigot\\servidor\\plugins\\ && copy /Y .\\target\\Soldado-1.0-SNAPSHOT.jar .\\Paper\\servidor\\plugins\\ && echo. && echo ------------------------------------------------------------------ && echo                Plugin compilado y copiado a Spigot y Paper. && echo ------------------------------------------------------------------ && echo Spigot: IniciarSpigot.bat / DetenerSpigot.bat && echo Paper:  Usar las tasks de Paper && echo ------------------------------------------------------------------"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "Iniciar Servidor Paper",
+            "type": "shell",
+            "command": "java",
+            "args": [
+                "-Xmx2G",
+                "-Xms1G",
+                "-jar",
+                "paper.jar",
+                "--nogui"
+            ],
+            "group": "test",
+            "isBackground": true,
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "options": {
+                "cwd": "${workspaceFolder}/Paper/servidor"
+            }
+        },
+        {
+            "label": "Detener Servidor Paper",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-Command",
+                "Get-Process -Name java -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -like '*paper.jar*' } | Stop-Process -Force"
+            ],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "Compilar, Desplegar y Reiniciar Paper",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Detener Servidor Paper",
+                "Compilar y Desplegar en Ambos Servidores",
+                "Iniciar Servidor Paper"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true
+            }
+        }
+    ]
+}

@@ -1,0 +1,26 @@
+[
+    {
+        "key": "ctrl+f1",
+        "command": "workbench.action.terminal.toggleTerminal"
+    },
+    {
+        "key": "ctrl+shift+b",
+        "command": "workbench.action.tasks.runTask",
+        "args": "Compilar y Desplegar Plugin"
+    },
+    {
+        "key": "ctrl+shift+r",
+        "command": "workbench.action.tasks.runTask",
+        "args": "Compilar, Desplegar y Reiniciar Servidor"
+    },
+    {
+        "key": "ctrl+shift+s",
+        "command": "workbench.action.tasks.runTask",
+        "args": "Iniciar Servidor Spigot"
+    },
+    {
+        "key": "ctrl+shift+x",
+        "command": "workbench.action.tasks.runTask",
+        "args": "Detener Servidor Spigot"
+    }
+]

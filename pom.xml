@@ -17,6 +17,10 @@
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
+        <repository>
+            <id>papermc</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -38,6 +42,34 @@
         </dependency>
 
     </dependencies>
+
+    <profiles>
+        <!-- Profile para desarrollo con Paper -->
+        <profile>
+            <id>paper</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <dependencies>
+                <!-- Paper API 1.21.6 -->
+                <dependency>
+                    <groupId>io.papermc.paper</groupId>
+                    <artifactId>paper-api</artifactId>
+                    <version>1.21.6-R0.1-SNAPSHOT</version>
+                    <scope>provided</scope>
+                </dependency>
+                
+                <!-- Citizens para Paper (usando el JAR local) -->
+                <dependency>
+                    <groupId>net.citizensnpcs</groupId>
+                    <artifactId>citizens</artifactId>
+                    <version>2.0.39-b3849</version>
+                    <scope>system</scope>
+                    <systemPath>${project.basedir}/libs/Citizens-2.0.39-b3849.jar</systemPath>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 
     <build>
         <plugins>

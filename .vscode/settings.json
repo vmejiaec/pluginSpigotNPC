@@ -1,0 +1,29 @@
+{
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.debug.settings.onBuildFailureProceed": true,
+    "java.debug.settings.enableRunDebugCodeLens": true,
+    "java.debug.settings.enableHotCodeReplace": true,
+    "java.debug.settings.showHex": false,
+    "java.debug.settings.showStaticVariables": true,
+    "java.debug.settings.showQualifiedNames": false,
+    "java.debug.settings.maxStringLength": 0,
+    "java.debug.settings.numericPrecision": 0,
+    "java.debug.settings.stepping.skipClasses": [],
+    "java.debug.settings.stepping.skipSynthetics": false,
+    "java.debug.settings.stepping.skipStaticInitializers": false,
+    "java.debug.settings.stepping.skipConstructors": false,
+    "java.debug.logLevel": "warn",
+    "java.server.launchMode": "Standard",
+    "java.trace.server": "messages",
+    "java.format.settings.profile": "GoogleStyle",
+    "editor.formatOnSave": true,
+    "java.saveActions.organizeImports": true,
+    "files.exclude": {
+        "**/target": true,
+        "**/.classpath": true,
+        "**/.project": true,
+        "**/.settings": true,
+        "**/.factorypath": true
+    }
+}

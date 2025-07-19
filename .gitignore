@@ -10,27 +10,38 @@ buildNumber.properties
 .mvn/wrapper/maven-wrapper.jar
 .mvn/wrapper/maven-wrapper.properties
 
-# IDEs
+# IDEs - Mantener solo la configuración del proyecto
 .idea/
-.vscode/
 .project
 .classpath
 .settings/
 *.iml
 *.ipr
 *.iws
+# Mantener .vscode/tasks.json y .vscode/settings.json pero excluir otros
+.vscode/launch.json
+.vscode/extensions.json
+.vscode/*.log
 
 # OS specific
 .DS_Store
 Thumbs.db
 
-# Logs
+# Java compiled files
+*.class
+
+# Logs y reportes
 *.log
 logs/
 crash-reports/
+hs_err_pid*.log
 
-# Docker
-# Exclude Spigot server generated files and volumes
+# ========================
+# SERVIDORES MINECRAFT
+# ========================
+
+# === SPIGOT SERVER ===
+# Archivos del servidor Spigot
 Spigot/servidor/banned-ips.json
 Spigot/servidor/banned-players.json
 Spigot/servidor/bukkit.yml
@@ -44,28 +55,93 @@ Spigot/servidor/spigot.jar
 Spigot/servidor/spigot.yml
 Spigot/servidor/usercache.json
 Spigot/servidor/whitelist.json
+Spigot/servidor/version_history.json
+Spigot/servidor/.console_history
+
+# Mundos del servidor Spigot
 Spigot/servidor/world/
 Spigot/servidor/world_nether/
 Spigot/servidor/world_the_end/
-Spigot/servidor/plugins/*.jar # Exclude compiled plugins in the server directory
+
+# Plugins compilados en Spigot
+Spigot/servidor/plugins/*.jar
 Spigot/servidor/plugins/bStats/
 Spigot/servidor/plugins/Citizens/
 Spigot/servidor/plugins/PluginMetrics/
+
+# Librerías y bundler Spigot
 Spigot/servidor/libraries/
 Spigot/servidor/bundler/
+Spigot/servidor/cache/
+Spigot/servidor/versions/
 
+# === PAPER SERVER ===
+# Archivos del servidor Paper
+Paper/servidor/banned-ips.json
+Paper/servidor/banned-players.json
+Paper/servidor/bukkit.yml
+Paper/servidor/commands.yml
+Paper/servidor/eula.txt
+Paper/servidor/help.yml
+Paper/servidor/ops.json
+Paper/servidor/permissions.yml
+Paper/servidor/server.properties
+Paper/servidor/paper.jar
+Paper/servidor/paper-*.jar
+Paper/servidor/spigot.yml
+Paper/servidor/usercache.json
+Paper/servidor/whitelist.json
+Paper/servidor/version_history.json
+Paper/servidor/.console_history
+
+# Mundos del servidor Paper
+Paper/servidor/world/
+Paper/servidor/world_nether/
+Paper/servidor/world_the_end/
+
+# Plugins compilados en Paper
+Paper/servidor/plugins/*.jar
+Paper/servidor/plugins/bStats/
+Paper/servidor/plugins/Citizens/
+Paper/servidor/plugins/PluginMetrics/
+
+# Configuraciones y cache Paper
+Paper/servidor/config/
+Paper/servidor/cache/
+Paper/servidor/libraries/
+Paper/servidor/versions/
+
+# === BUILDTOOLS ===
 # Exclude BuildTools output
 Spigot/buildtools/output/
+*/buildtools/work/
+*/buildtools/apache-maven-*/
+*/buildtools/BuildData/
+*/buildtools/Bukkit/
+*/buildtools/CraftBukkit/
+*/buildtools/Spigot/
 
-# Temporary files
+# ========================
+# ARCHIVOS TEMPORALES
+# ========================
 *~
 *.bak
 *.swp
 *.swo
 *.tmp
-*.class
 
-# Specific temporary Java files
+# Archivos temporales específicos del proyecto
 Soldado copy.java
 Soldado copy 2.java
-Spigot/servidor/plugins/Soldado-1.0-SNAPSHOT.jar
+
+# ========================
+# ARCHIVOS BAT (OPCIONALES)
+# ========================
+# Si decides no versionar los .bat, descomenta estas líneas:
+# *.bat
+# IniciarSpigot.bat
+# DetenerSpigot.bat
+# CrearPublicarPlugin.bat
+src/main/java/edu/vic/menus/BaseMenu.java
+Paper/servidor/plugins/.paper-remapped/remap-classpath/D2EFADD87475055C036E3C438747F048458ACE3831E9DB9BBADBA62C52AB2C32.jar
+Paper/servidor/plugins/.paper-remapped/mappings/reversed/D2EFADD87475055C036E3C438747F048458ACE3831E9DB9BBADBA62C52AB2C32.tiny
