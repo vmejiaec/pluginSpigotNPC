@@ -30,6 +30,16 @@ Thumbs.db
 # Java compiled files
 *.class
 
+# ========================
+# ARCHIVOS JAR
+# ========================
+# Excluir TODOS los archivos .jar por defecto
+*.jar
+
+# EXCEPCIONES: Solo incluir los JARs específicos que queremos versionar
+!libs/Citizens-2.0.39-b3849.jar
+# Si tienes otros JARs específicos que quieres versionar, agrégalos aquí con !nombrearchivo.jar
+
 # Logs y reportes
 *.log
 logs/
@@ -51,7 +61,6 @@ Spigot/servidor/help.yml
 Spigot/servidor/ops.json
 Spigot/servidor/permissions.yml
 Spigot/servidor/server.properties
-Spigot/servidor/spigot.jar
 Spigot/servidor/spigot.yml
 Spigot/servidor/usercache.json
 Spigot/servidor/whitelist.json
@@ -64,7 +73,6 @@ Spigot/servidor/world_nether/
 Spigot/servidor/world_the_end/
 
 # Plugins compilados en Spigot
-Spigot/servidor/plugins/*.jar
 Spigot/servidor/plugins/bStats/
 Spigot/servidor/plugins/Citizens/
 Spigot/servidor/plugins/PluginMetrics/
@@ -86,8 +94,6 @@ Paper/servidor/help.yml
 Paper/servidor/ops.json
 Paper/servidor/permissions.yml
 Paper/servidor/server.properties
-Paper/servidor/paper.jar
-Paper/servidor/paper-*.jar
 Paper/servidor/spigot.yml
 Paper/servidor/usercache.json
 Paper/servidor/whitelist.json
@@ -100,7 +106,6 @@ Paper/servidor/world_nether/
 Paper/servidor/world_the_end/
 
 # Plugins compilados en Paper
-Paper/servidor/plugins/*.jar
 Paper/servidor/plugins/bStats/
 Paper/servidor/plugins/Citizens/
 Paper/servidor/plugins/PluginMetrics/

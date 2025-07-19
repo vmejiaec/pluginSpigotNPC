@@ -1,0 +1,16 @@
+# Configuración del plugin Soldado
+# Este archivo almacena la configuración persistente del NPC
+
+# Configuración del NPC 
+npc:
+  name: "Soldado"
+  skin: "saku328"
+
+# Configuración de las coordenadas de los waypoints
+# Las coordenadas están en formato "x,y,z"
+waypoints:
+  - "-41,64,46"
+  - "-49,64,46"
+  - "-49,64,40"
+  - "-53,64,36"
+  - "-41,64,36"
