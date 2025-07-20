@@ -16,3 +16,6 @@ commands:
   recargarconfig:
     description: Recarga la configuración del NPC desde el archivo config.yml
     usage: /recargarconfig
+  menustart:
+    description: Inicia el menu Start
+    usage: /menustart

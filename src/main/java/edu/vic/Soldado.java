@@ -22,6 +22,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import edu.vic.comandos.MenuCommand;
+import edu.vic.menus.MenuManager;
 import net.md_5.bungee.api.ChatColor;
 
 import net.citizensnpcs.trait.waypoint.Waypoints;
@@ -46,7 +48,13 @@ public class Soldado extends JavaPlugin implements Listener {
         this.saveDefaultConfig(); // Crea config.yml si no existe
         cargarConfiguracionNPC();
         Bukkit.getPluginManager().registerEvents(this, this);
-        getLogger().info("Plugin Soldado activado correctamente");
+        getLogger().info(" ---> Plugin Soldado activado correctamente");
+
+        // Registrar el comando menu
+        getCommand("menustart").setExecutor(new MenuCommand());
+
+        // Inicializar menu manager
+        MenuManager.init(this);
     }
 
     @Override
