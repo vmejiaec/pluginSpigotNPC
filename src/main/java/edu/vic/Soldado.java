@@ -23,6 +23,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import edu.vic.comandos.MenuCommand;
+import edu.vic.hologramas.HologramListener;
+import edu.vic.hologramas.HologramManager;
 import edu.vic.menus.MenuManager;
 import net.md_5.bungee.api.ChatColor;
 
@@ -43,6 +45,8 @@ public class Soldado extends JavaPlugin implements Listener {
     private String NPC_Name = "Soldado";
     private String NPC_SkinName = "saku328";
 
+    private HologramManager hologramManager;
+
     @Override
     public void onEnable() {
         this.saveDefaultConfig(); // Crea config.yml si no existe
@@ -55,6 +59,11 @@ public class Soldado extends JavaPlugin implements Listener {
 
         // Inicializar menu manager
         MenuManager.init(this);
+
+        // Inicializar Holograma
+        hologramManager = new HologramManager(this);
+        HologramListener hologramListener = new HologramListener(this, hologramManager);
+        Bukkit.getPluginManager().registerEvents(hologramListener, this);
     }
 
     @Override
@@ -83,7 +92,38 @@ public class Soldado extends JavaPlugin implements Listener {
             return true;
         }
 
+        // Crear los hologramas
+        if (label.equalsIgnoreCase("crearhologramas")) {
+            return crearHologramasJuego(jugador);
+        }
+
+        // Eliminar los hologramas
+        if (label.equalsIgnoreCase("eliminarHologramas")) {
+            hologramManager.removeAllHolograms();
+            jugador.sendMessage("Todos los hologramas eliminados");
+            return true;
+        }
+
         return false;
+    }
+
+    private boolean crearHologramasJuego(Player player) {
+        World world = player.getWorld();
+        Location playerLoc = player.getLocation();
+        hologramManager.removeAllHolograms();
+        // Posiciones de los hologramas
+        Location alFrente = playerLoc.clone().add(2, 1, 0);
+        Location alaDerecha = playerLoc.clone().add(0, 1, 2);
+        Location alaIzquierda = playerLoc.clone().add(0, 1, -2);
+        Location atras = playerLoc.clone().add(-2, 1, 0);
+        // hologramas que rodean al jugador
+        hologramManager.createHologram(alFrente, "INICIAR JUEGO", "iniciar_juego");
+        hologramManager.createHologram(alaDerecha, "VER PUNTUACIÓN", "ver_puntuacion");
+        hologramManager.createHologram(alaIzquierda, "TERMINAR JUEGO", "terminar_juego");
+        hologramManager.createHologram(atras, "VER LOS CRÉDITOS", "creditos");
+
+        player.sendMessage("Los hologramas han sido creados");
+        return true;
     }
 
     // Usar BukkitRunnable para revisar si hay jugadores cerca
