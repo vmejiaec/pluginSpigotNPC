@@ -1,55 +1,54 @@
 package edu.vic.hologramas;
 
-import java.lang.management.PlatformLoggingMXBean;
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Slime;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 public class HologramManager {
     private final Plugin plugin;
-    private final Map<String, Slime> hologramas;
+    private final Map<String, ArmorStand> hologramas;
 
     public HologramManager(Plugin plugin) {
         this.plugin = plugin;
-        this.hologramas = new HashMap();
-    };
+        this.hologramas = new HashMap<>();
+    }
 
-    public Slime createHologram(Location location, String texto, String id) {
+    public ArmorStand createHologram(Location location, String texto, String id) {
         // 1. Verificar si ya existe un holograma con ese ID
         if (hologramas.containsKey(id)) {
             removeHologram(id);
         }
-        // 2. Crear slime en la location
-        Slime holograma = (Slime) location.getWorld()
-                .spawnEntity(location, EntityType.SLIME);
+        // 2. Crear ArmorStand en la location
+        ArmorStand holograma = (ArmorStand) location.getWorld()
+                .spawnEntity(location, EntityType.ARMOR_STAND);
 
-        // 3. Configurar slime:
-        holograma.setSize(1);
-        holograma.setInvisible(true);
+        // 3. Configurar ArmorStand:
+        holograma.setVisible(true);
         holograma.setGravity(false);
         holograma.setCanPickupItems(false); // No recoge items
+        holograma.setMarker(false); // Permite clicks
         holograma.setCustomName(texto);
         holograma.setCustomNameVisible(true);
-        holograma.setSilent(true);
-        holograma.setAI(false);
+        holograma.setSmall(true);
+        holograma.setArms(true);
+        holograma.setBasePlate(true);
 
         // 4. Guardar en el Map con el ID
         hologramas.put(id, holograma);
-        // 5. Retornar el slime
+        // 5. Retornar el ArmorStand
         return holograma;
 
     }
 
     public boolean removeHologram(String id) {
-        Slime holograma = hologramas.get(id);
+        ArmorStand holograma = hologramas.get(id);
         if (holograma != null) {
             holograma.remove();
             hologramas.remove(id);
@@ -59,7 +58,7 @@ public class HologramManager {
     }
 
     public boolean updateHologram(String id, String nuevoTexto) {
-        Slime holograma = hologramas.get(id);
+        ArmorStand holograma = hologramas.get(id);
         if (holograma != null) {
             holograma.setCustomName(nuevoTexto);
             return true;
@@ -67,23 +66,23 @@ public class HologramManager {
         return false;
     }
 
-    public Slime getHologram(String id) {
+    public ArmorStand getHologram(String id) {
         return hologramas.get(id);
     }
 
-    public boolean isHologram(Slime slime) {
-        return hologramas.containsValue(slime);
+    public boolean isHologram(ArmorStand armorStand) {
+        return hologramas.containsValue(armorStand);
     }
 
     public void removeAllHolograms() {
-        for (Slime holograma : hologramas.values()) {
+        for (ArmorStand holograma : hologramas.values()) {
             holograma.remove();
         }
         hologramas.clear();
     }
 
-    public String getHologramaId(Slime holograma) {
-        for (Map.Entry<String, Slime> entry : hologramas.entrySet()) {
+    public String getHologramaId(ArmorStand holograma) {
+        for (Map.Entry<String, ArmorStand> entry : hologramas.entrySet()) {
             if (entry.getValue().equals(holograma)) {
                 return entry.getKey();
             }
@@ -95,20 +94,23 @@ public class HologramManager {
         return hologramas.keySet();
     }
 
-    public Slime createMenuOption(Location location, String texto, String id) {
+    public ArmorStand createMenuOption(Location location, String texto, String id) {
         if (hologramas.containsKey(id)) {
             removeHologram(id);
         }
-        Slime menuOption = (Slime) location.getWorld()
-                .spawnEntity(location, EntityType.SLIME);
+        ArmorStand menuOption = (ArmorStand) location.getWorld()
+                .spawnEntity(location, EntityType.ARMOR_STAND);
 
-        menuOption.setSize(1); // Pequeño pero clickeable
-        menuOption.setInvisible(true);
+        // Configurar ArmorStand para menú vertical
+        menuOption.setVisible(false);
+        menuOption.setGravity(false);
+        menuOption.setCanPickupItems(false);
+        menuOption.setMarker(false); // Permite clicks
         menuOption.setCustomName("§b► §f" + texto); // Con colores y símbolo
         menuOption.setCustomNameVisible(true);
-        menuOption.setSilent(true);
-        menuOption.setAI(false);
-        menuOption.setGravity(false);
+        menuOption.setSmall(true);
+        menuOption.setArms(false);
+        menuOption.setBasePlate(false);
 
         hologramas.put(id, menuOption);
 
@@ -116,17 +118,12 @@ public class HologramManager {
     }
 
     public boolean crearMenuVertical(Player player) {
-        Location base = player.getLocation().clone().add(2, 3, 0);
+        Location base = player.getLocation().clone().add(0, 2, 2); // Ajustar altura
 
-        Slime s1 = createMenuOption(base.clone(), "INICIAR JUEGO", "iniciar_juego");
-        plugin.getLogger().info("Slime 1 creado: " + (s1 != null ? "OK" : "FALLÓ"));
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            plugin.getLogger().info("Verificación: Slime 1 existe: " + (s1 != null && s1.isValid()));
-        }, 40L);
-
-        createMenuOption(base.clone().add(0, -0.6, 0), "VER PUNTUACIÓN", "ver_puntuacion");
-        createMenuOption(base.clone().add(0, -1.2, 0), "TERMINAR JUEGO", "terminar_juego");
-        createMenuOption(base.clone().add(0, -1.8, 0), "VER CRÉDITOS", "creditos");
+        createMenuOption(base.clone(), "INICIAR JUEGO", "iniciar_juego");
+        createMenuOption(base.clone().add(0, -0.8, 0), "VER PUNTUACIÓN", "ver_puntuacion");
+        createMenuOption(base.clone().add(0, -1.6, 0), "TERMINAR JUEGO", "terminar_juego");
+        createMenuOption(base.clone().add(0, -2.4, 0), "VER CRÉDITOS", "creditos");
 
         return true;
     }
