@@ -22,6 +22,12 @@ commands:
   crearhologramas:
     description: Crea los hologramas
     usage: /crearhologramas
-  eliminarHologramas:
-    description: Elimina los hologramas
-    usage: /eliminarHologramas
+  eliminarhologramas:
+    description: Elimina los hologramas que se acaban de crear
+    usage: /eliminarhologramas
+  eliminartodoholograma:
+    description: Elimina todos los hologramas 
+    usage: /eliminartodoholograma
+  crearmenuvertical:
+    description: Crea el menú vertical
+    usage: /crearmenuvertical

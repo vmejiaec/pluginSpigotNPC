@@ -22,6 +22,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import edu.vic.comandos.HologramCommands;
 import edu.vic.comandos.MenuCommand;
 import edu.vic.hologramas.HologramListener;
 import edu.vic.hologramas.HologramManager;
@@ -56,9 +57,11 @@ public class Soldado extends JavaPlugin implements Listener {
 
         // Registrar el comando menu
         getCommand("menustart").setExecutor(new MenuCommand());
-
         // Inicializar menu manager
         MenuManager.init(this);
+
+        // Registrar los comandos para manejar los hologramas
+        getCommand("eliminartodoholograma").setExecutor(new HologramCommands());
 
         // Inicializar Holograma
         hologramManager = new HologramManager(this);
@@ -98,9 +101,16 @@ public class Soldado extends JavaPlugin implements Listener {
         }
 
         // Eliminar los hologramas
-        if (label.equalsIgnoreCase("eliminarHologramas")) {
+        if (label.equalsIgnoreCase("eliminarhologramas")) {
             hologramManager.removeAllHolograms();
             jugador.sendMessage("Todos los hologramas eliminados");
+            return true;
+        }
+
+        // Crear menus verticales
+        if (label.equalsIgnoreCase("crearmenuvertical")) {
+            hologramManager.crearMenuVertical(jugador);
+            jugador.sendMessage("Menú vertical creado.");
             return true;
         }
 

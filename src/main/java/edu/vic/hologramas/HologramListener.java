@@ -1,6 +1,6 @@
 package edu.vic.hologramas;
 
-import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Slime;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,16 +19,16 @@ public class HologramListener implements Listener {
 
     @EventHandler
     public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
-        if (!(event.getRightClicked() instanceof ArmorStand armorStand)) {
+        if (!(event.getRightClicked() instanceof Slime slime)) {
             return;
         }
 
-        if (!hologramManager.isHologram(armorStand)) {
+        if (!hologramManager.isHologram(slime)) {
             return;
         }
 
         Player player = event.getPlayer();
-        String hologramId = hologramManager.getHologramaId(armorStand);
+        String hologramId = hologramManager.getHologramaId(slime);
 
         event.setCancelled(true);
 
@@ -37,7 +37,7 @@ public class HologramListener implements Listener {
 
     private void handleHologramClick(Player player, String hologramId) {
         // Reproducir sonido y partículas al dar click
-        ArmorStand holograma = hologramManager.getHologram(hologramId);
+        Slime holograma = hologramManager.getHologram(hologramId);
         if (holograma != null) {
             playClickEffect(player, holograma);
         }
@@ -61,7 +61,7 @@ public class HologramListener implements Listener {
         }
     }
 
-    private void playClickEffect(Player player, ArmorStand holograma) {
+    private void playClickEffect(Player player, Slime holograma) {
         player.getWorld().playSound(
                 holograma.getLocation(),
                 org.bukkit.Sound.UI_BUTTON_CLICK,
