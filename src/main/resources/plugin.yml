@@ -19,9 +19,6 @@ commands:
   menustart:
     description: Inicia el menu Start
     usage: /menustart
-  crearhologramas:
-    description: Crea los hologramas
-    usage: /crearhologramas
   eliminarhologramas:
     description: Elimina los hologramas que se acaban de crear
     usage: /eliminarhologramas

@@ -1,34 +1,80 @@
 package edu.vic.menus;
 
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import org.bukkit.Location;
 
 public class MenuManager {
-    private static StartMenu startMenu;
-    private static GameplayMenu gameplayMenu;
-    private static GameOverMenu gameOverMenu;
-    private static CreditsMenu creditsMenu;
+    private final Map<String, MenuPair> menuOptions;
 
-    public static void init(Plugin plugin) {
-        startMenu = new StartMenu(plugin);
-        gameplayMenu = new GameplayMenu(plugin);
-        gameOverMenu = new GameOverMenu(plugin);
-        creditsMenu = new CreditsMenu(plugin);
+    public MenuManager() {
+        menuOptions = new HashMap<>();
     }
 
-    public static void openStartMenu(Player player) {
-        startMenu.open(player);
+    // Devuelve la opción de menú dado el id
+    public MenuPair getMenuOption(String id) {
+        return menuOptions.get(id);
     }
 
-    public static void openGameOverMenu(Player player) {
-        gameOverMenu.open(player);
+    // Devuelve el id dada la opción de menú
+    public String getMenuOptionId(MenuPair menuOption) {
+        for (Map.Entry<String, MenuPair> entry : menuOptions.entrySet()) {
+            if (entry.getValue().equals(menuOption)) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 
-    public static void openGameplayMenu(Player player) {
-        gameplayMenu.open(player);
+    // Verifica si es una opción de menú
+    public boolean isMenuOption(MenuPair menuOption) {
+        return menuOptions.containsValue(menuOption);
     }
 
-    public static void openCreditsMenu(Player player) {
-        creditsMenu.open(player);
+    // Borra una opción de menú
+    public boolean removeMenuOption(String id) {
+        MenuPair menuOption = getMenuOption(id);
+        if (menuOption != null) {
+            menuOption.remove();
+            menuOptions.remove(id);
+            return true;
+        }
+        return false;
     }
+
+    // Borra todas las opciones de menú
+    public void removeAllMenuOptions() {
+        for (MenuPair menuOption : menuOptions.values()) {
+            menuOption.remove();
+        }
+        menuOptions.clear();
+    }
+
+    // Actualiza una opción de menú
+    public boolean updateMenuOption(String id, MenuPair newMenuOption) {
+        MenuPair menuOption = getMenuOption(id);
+        if (menuOption != null) {
+            menuOption = newMenuOption;
+            return true;
+        }
+        return false;
+    }
+
+    // Retorna un conjunto con los ids de las opciones de menú
+    public Set<String> getAllMenuOptionsIds() {
+        return menuOptions.keySet();
+    }
+
+    // Crea una opción de menú
+    public MenuPair createMenuOption(Location location, String texto, String id) {
+        if (menuOptions.containsKey(id)) {
+            removeMenuOption(id);
+        }
+        MenuPair menuOption = new MenuPair(location, texto);
+        menuOptions.put(id, menuOption);
+        return menuOption;
+    }
+
 }

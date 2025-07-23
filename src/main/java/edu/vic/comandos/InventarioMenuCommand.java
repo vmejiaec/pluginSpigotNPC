@@ -5,11 +5,11 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import edu.vic.menus.MenuManager;
+import edu.vic.inventariomenus.InventarioMenuManager;
 
-public class MenuCommand implements CommandExecutor {
+public class InventarioMenuCommand implements CommandExecutor {
 
-    public MenuCommand() {
+    public InventarioMenuCommand() {
 
     }
 
@@ -19,7 +19,7 @@ public class MenuCommand implements CommandExecutor {
             return false;
 
         if (label.equalsIgnoreCase("menustart")) {
-            MenuManager.openStartMenu(player);
+            InventarioMenuManager.openStartMenu(player);
             player.sendMessage("Menu abierto");
             return true;
         }

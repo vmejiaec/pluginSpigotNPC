@@ -1,4 +1,4 @@
-package edu.vic.menus;
+package edu.vic.inventariomenus;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
-public class GameOverMenu extends BaseMenu {
+public class GameOverMenu extends BaseInventarioMenu {
 
     public GameOverMenu(Plugin plugin) {
         super(plugin, "Menú de Game Over", 9);
@@ -27,7 +27,7 @@ public class GameOverMenu extends BaseMenu {
     protected void handleClick(Player player, int slot) {
         if (slot == 4) {
             player.sendMessage("Inicio del juego");
-            MenuManager.openStartMenu(player);
+            InventarioMenuManager.openStartMenu(player);
         }
     }
 

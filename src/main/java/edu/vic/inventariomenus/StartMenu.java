@@ -1,4 +1,4 @@
-package edu.vic.menus;
+package edu.vic.inventariomenus;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
-public class StartMenu extends BaseMenu {
+public class StartMenu extends BaseInventarioMenu {
 
     public StartMenu(Plugin plugin) {
         super(plugin, "Inicio del juego", 9);
@@ -26,7 +26,7 @@ public class StartMenu extends BaseMenu {
     protected void handleClick(Player player, int slot) {
         if (slot == 4) {
             player.sendMessage("Comenzando el juego");
-            MenuManager.openGameplayMenu(player);
+            InventarioMenuManager.openGameplayMenu(player);
         }
     }
 

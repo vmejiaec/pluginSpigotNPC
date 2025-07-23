@@ -23,10 +23,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import edu.vic.comandos.HologramCommands;
-import edu.vic.comandos.MenuCommand;
-import edu.vic.hologramas.HologramListener;
-import edu.vic.hologramas.HologramManager;
+import edu.vic.comandos.InventarioMenuCommand;
+import edu.vic.inventariomenus.InventarioMenuManager;
+import edu.vic.menus.MenuListener;
 import edu.vic.menus.MenuManager;
+import edu.vic.menus.MenuVertical;
 import net.md_5.bungee.api.ChatColor;
 
 import net.citizensnpcs.trait.waypoint.Waypoints;
@@ -46,7 +47,7 @@ public class Soldado extends JavaPlugin implements Listener {
     private String NPC_Name = "Soldado";
     private String NPC_SkinName = "saku328";
 
-    private HologramManager hologramManager;
+    private MenuManager menuManager;
 
     @Override
     public void onEnable() {
@@ -56,17 +57,17 @@ public class Soldado extends JavaPlugin implements Listener {
         getLogger().info(" ---> Plugin Soldado activado correctamente");
 
         // Registrar el comando menu
-        getCommand("menustart").setExecutor(new MenuCommand());
+        getCommand("menustart").setExecutor(new InventarioMenuCommand());
         // Inicializar menu manager
-        MenuManager.init(this);
+        InventarioMenuManager.init(this);
 
         // Registrar los comandos para manejar los hologramas
         getCommand("eliminartodoholograma").setExecutor(new HologramCommands());
 
         // Inicializar Holograma
-        hologramManager = new HologramManager(this);
-        HologramListener hologramListener = new HologramListener(this, hologramManager);
-        Bukkit.getPluginManager().registerEvents(hologramListener, this);
+        menuManager = new MenuManager();
+        MenuListener menuListener = new MenuListener(menuManager);
+        Bukkit.getPluginManager().registerEvents(menuListener, this);
     }
 
     @Override
@@ -95,45 +96,22 @@ public class Soldado extends JavaPlugin implements Listener {
             return true;
         }
 
-        // Crear los hologramas
-        if (label.equalsIgnoreCase("crearhologramas")) {
-            return crearHologramasJuego(jugador);
-        }
-
-        // Eliminar los hologramas
+        // Eliminar las opciones de menu
         if (label.equalsIgnoreCase("eliminarhologramas")) {
-            hologramManager.removeAllHolograms();
+            menuManager.removeAllMenuOptions();
             jugador.sendMessage("Todos los hologramas eliminados");
             return true;
         }
 
         // Crear menus verticales
         if (label.equalsIgnoreCase("crearmenuvertical")) {
-            hologramManager.crearMenuVertical(jugador);
+            MenuVertical menuVertical = new MenuVertical(menuManager);
+            menuVertical.crearMenuVertical(jugador.getLocation());
             jugador.sendMessage("Menú vertical creado.");
             return true;
         }
 
         return false;
-    }
-
-    private boolean crearHologramasJuego(Player player) {
-        World world = player.getWorld();
-        Location playerLoc = player.getLocation();
-        hologramManager.removeAllHolograms();
-        // Posiciones de los hologramas
-        Location alFrente = playerLoc.clone().add(2, 1, 0);
-        Location alaDerecha = playerLoc.clone().add(0, 1, 2);
-        Location alaIzquierda = playerLoc.clone().add(0, 1, -2);
-        Location atras = playerLoc.clone().add(-2, 1, 0);
-        // hologramas que rodean al jugador
-        hologramManager.createHologram(alFrente, "INICIAR JUEGO", "iniciar_juego");
-        hologramManager.createHologram(alaDerecha, "VER PUNTUACIÓN", "ver_puntuacion");
-        hologramManager.createHologram(alaIzquierda, "TERMINAR JUEGO", "terminar_juego");
-        hologramManager.createHologram(atras, "VER LOS CRÉDITOS", "creditos");
-
-        player.sendMessage("Los hologramas han sido creados");
-        return true;
     }
 
     // Usar BukkitRunnable para revisar si hay jugadores cerca

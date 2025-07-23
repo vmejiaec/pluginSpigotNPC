@@ -1,4 +1,4 @@
-package edu.vic.menus;
+package edu.vic.inventariomenus;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
-public class CreditsMenu extends BaseMenu {
+public class CreditsMenu extends BaseInventarioMenu {
 
     public CreditsMenu(Plugin plugin) {
         super(plugin, "Menú de créditos", 9);
@@ -26,7 +26,7 @@ public class CreditsMenu extends BaseMenu {
     protected void handleClick(Player player, int slot) {
         if (slot == 4) {
             player.sendMessage("Volver al inicio del juego");
-            MenuManager.openStartMenu(player);
+            InventarioMenuManager.openStartMenu(player);
         }
     }
 

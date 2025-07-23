@@ -1,12 +1,11 @@
 package edu.vic.comandos;
 
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TextDisplay;
 
 public class HologramCommands implements CommandExecutor {
 
@@ -34,20 +33,21 @@ public class HologramCommands implements CommandExecutor {
                 "INICIAR JUEGO",
                 "VER PUNTUACIÓN",
                 "TERMINAR JUEGO",
+                "VER CRÉDITOS",
                 "VER LOS CRÉDITOS"
         };
         int removedCount = 0;
         for (Entity entity : player.getWorld().getEntities()) {
-            if (!(entity instanceof ArmorStand armorStand)) {
+            if (!(entity instanceof TextDisplay menuOption)) {
                 continue;
             }
-            String name = armorStand.getCustomName();
+            String name = menuOption.getText();
             if (name == null) {
                 continue;
             }
             for (String hologramaTexto : hologramasTextos) {
                 if (name.contains(hologramaTexto)) {
-                    armorStand.remove();
+                    menuOption.remove();
                     removedCount++;
                     break;
                 }
