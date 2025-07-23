@@ -1,10 +1,8 @@
 package edu.vic.menus;
 
-import org.apache.maven.artifact.repository.metadata.Plugin;
 import org.bukkit.Location;
 import org.bukkit.entity.Interaction;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
@@ -12,22 +10,22 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 public class MenuListener implements Listener {
     private final MenuManager manager;
 
-    public MenuListener(Plugin plugin, MenuManager manager) {
+    public MenuListener(MenuManager manager) {
         this.manager = manager;
     }
 
     @EventHandler
     public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
-        if (!(event.getRightClicked() instanceof Interaction menuOption)) {
+        if (!(event.getRightClicked() instanceof Interaction menuOptionInter)) {
             return;
         }
 
-        if (!manager.isMenuOption(menuOption)) {
+        if (!manager.isMenuOptionInter(menuOptionInter)) {
             return;
         }
 
         Player player = event.getPlayer();
-        String menuOptionId = manager.getMenuOptionId(menuOption);
+        String menuOptionId = manager.getMenuOptionInterId(menuOptionInter);
 
         event.setCancelled(true);
 
@@ -67,7 +65,7 @@ public class MenuListener implements Listener {
                 1.0f, 1.0f);
         player.spawnParticle(
                 org.bukkit.Particle.VILLAGER_HAPPY,
-                loc.add(0, 0.5, 0),
+                loc.clone().add(0, 0.5, 0),
                 5, 0.2, 0.2, 0.2, 0);
     }
 }

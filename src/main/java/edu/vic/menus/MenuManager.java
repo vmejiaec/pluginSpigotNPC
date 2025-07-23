@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Interaction;
 
 public class MenuManager {
     private final Map<String, MenuPair> menuOptions;
@@ -33,6 +34,32 @@ public class MenuManager {
         return menuOptions.containsValue(menuOption);
     }
 
+    // Verifica si es una opción de menu en base del Interaction
+    public boolean isMenuOptionInter(Interaction inter) {
+        if (inter == null)
+            return false;
+        for (Map.Entry<String, MenuPair> entry : menuOptions.entrySet()) {
+            MenuInter menuInter = entry.getValue().getMenuInter();
+            if (menuInter != null && menuInter.inter.equals(inter)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Verifica si es una opción de menu en base del Interaction
+    public String getMenuOptionInterId(Interaction inter) {
+        if (inter == null)
+            return null;
+        for (Map.Entry<String, MenuPair> entry : menuOptions.entrySet()) {
+            MenuInter menuInter = entry.getValue().getMenuInter();
+            if (menuInter != null && menuInter.inter.equals(inter)) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
     // Borra una opción de menú
     public boolean removeMenuOption(String id) {
         MenuPair menuOption = getMenuOption(id);
@@ -56,7 +83,8 @@ public class MenuManager {
     public boolean updateMenuOption(String id, MenuPair newMenuOption) {
         MenuPair menuOption = getMenuOption(id);
         if (menuOption != null) {
-            menuOption = newMenuOption;
+            menuOption.remove();
+            menuOptions.put(id, newMenuOption);
             return true;
         }
         return false;
