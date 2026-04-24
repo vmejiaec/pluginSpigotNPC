@@ -104,6 +104,10 @@ Paper/servidor/.console_history
 Paper/servidor/world/
 Paper/servidor/world_nether/
 Paper/servidor/world_the_end/
+Paper/servidor/mundo_plano/
+Paper/servidor/mundo_plano_nether/
+Paper/servidor/mundo_plano_the_end/
+
 
 # Plugins compilados en Paper
 Paper/servidor/plugins/bStats/

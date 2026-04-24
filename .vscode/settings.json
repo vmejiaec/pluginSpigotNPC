@@ -20,7 +20,7 @@
     "editor.formatOnSave": true,
     "java.saveActions.organizeImports": true,
     "files.exclude": {
-        "**/target": true,
+        "**/target": false,
         "**/.classpath": true,
         "**/.project": true,
         "**/.settings": true,

@@ -10,6 +10,9 @@ commands:
   eliminarnpcs:
     description: Elimina todos los NPCs 
     usage: /eliminarnpcs
+  npcmemoria:
+    description: Muestra la memoria CBR del NPC
+    usage: /npcmemoria
   iniciarpatrullaje:
     description: Inicia el patrullaje del NPC
     usage: /iniciarpatrullaje
